@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<head>
+	<title> Prototype canvas </title>
+
+</head>
+<body>
+	<canvas id="proto" width="490" height="220"></canvas>
+	<div id="canvasID"></div>
+	<script>
+		var canvasID = document.getElementById('canvasID');
+		canvas = document.createElement('canvas');
+		canvas.setAttribute('width',canvasWidth);
+		canvas.setAttribute('height',canvasHieght);
+		canvas.setAttribute('id','canvas');
+		if(typeof G_vmlCanvasManager != 'undefined'){
+			canvas = G_vmlCanvasManager.initElement(canvas);
+		}	
+		context= canvas.getContext("2D");
+	</script>
+
+</body>
+
+</html>
