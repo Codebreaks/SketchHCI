@@ -1,16 +1,26 @@
 var clickX_simple = new Array();
 var clickY_simple = new Array();
+var strokex = new Array();
+var strokey = new Array();
+var removeX = new Array();
+var removeY = new Array();
 var clickDrag_simple = new Array();
 var paint_simple;
 var canvas_simple;
 var context_simple;
-var canvasWidth = 500;
+var canvasWidth = 1200;
 var canvasHeight = 500;
 var colorPurple = "#cb3594";
 var colorGreen = "#659b41";
 var colorYellow = "#ffcf33";
 var colorBrown = "#986928";
+var colorBlue = "#0000FF";
+var colorRed = "#FF0000";
+var colorBlack = "#000000";
 var eraser = '#ffffff';
+
+var undoLog = 0;
+var redoLog = 0;
 
 var curColor_simpleColors = colorPurple;
 var clickColor = new Array();
@@ -26,6 +36,8 @@ var curTool = "color";
 function prepareSimpleCanvas()
 {
 
+	savedImages= [];
+	removedImages= [];
 	// Create the canvas (Neccessary for IE because it doesn't know what a canvas element is)
 	var canvasDiv = document.getElementById('canvasSimpleDiv');
 	canvas_simple = document.createElement('canvas');
@@ -38,22 +50,35 @@ function prepareSimpleCanvas()
 	}
 	context_simple = canvas_simple.getContext("2d");
 
+
+	function getMousePos(canvas, evt) {
+		var rect = canvas.getBoundingClientRect();
+		return {
+  			x: evt.clientX - rect.left,
+  			y: evt.clientY - rect.top
+		};
+	}
 	// Add mouse events
 	// ----------------
 	canvas_simple.addEventListener("mousedown", function(e)
 	{
+		var pos = getMousePos(canvasDiv,e)
 		// Mouse down location
-		var mouseX = e.pageX - this.offsetLeft;
-		var mouseY = e.pageY - this.offsetTop;
-
+		var mouseX = pos.x - this.offsetLeft;
+		var mouseY = pos.y - this.offsetTop;
+		strokex = [];
+		strokey = [];
 		paint_simple = true;
 		addClickSimple(mouseX, mouseY, false);
+		saveStroke(mouseX,mouseY);
 		redrawSimple();
 	});
 
 	canvas_simple.addEventListener("mousemove", function(e){
+		var pos = getMousePos(canvasDiv,e)
 		if(paint_simple){
-			addClickSimple(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
+			addClickSimple(pos.x - this.offsetLeft, pos.y - this.offsetTop, true);
+			saveStroke(pos.x - this.offsetLeft, pos.y - this.offsetTop);
 			redrawSimple();
 		}
 	});
@@ -75,15 +100,41 @@ function prepareSimpleCanvas()
 		clickColor = new Array();
 		clearCanvas_simple();
 	});
+    // this is an example of jquery
+	$('.preview').click(function(e) { // preview click
+        // fade to toggle just slowly open or close the extra pop up screen
+        $('.colorWheel').fadeToggle("slow", "linear");
+        //bCanPreview = true;
+    });
+
 	//choose colors
 	grabPurple.addEventListener("mousedown", function(e){
 		curColor_simpleColors = colorPurple;
+		$('.colorWheel').fadeToggle("slow", "linear");
 	});
 	grabGreen.addEventListener("mousedown", function(e){
 		curColor_simpleColors = colorGreen;
+		$('.colorWheel').fadeToggle("slow", "linear");
 	});
 	grabYellow.addEventListener("mousedown", function(e){
 		curColor_simpleColors = colorYellow;
+		$('.colorWheel').fadeToggle("slow", "linear");
+	});
+	grabBrown.addEventListener("mousedown", function(e){
+		curColor_simpleColors = colorBrown;
+		$('.colorWheel').fadeToggle("slow", "linear");
+	});
+	grabBlue.addEventListener("mousedown", function(e){
+		curColor_simpleColors = colorBlue;
+		$('.colorWheel').fadeToggle("slow", "linear");
+	});
+	grabRed.addEventListener("mousedown", function(e){
+		curColor_simpleColors = colorRed;
+		$('.colorWheel').fadeToggle("slow", "linear");
+	});
+	grabBlack.addEventListener("mousedown", function(e){
+		curColor_simpleColors = colorBlack;
+		$('.colorWheel').fadeToggle("slow", "linear");
 	});
 	//add Eraser
 	clickEraser.addEventListener("mousedown", function(e){
@@ -99,21 +150,31 @@ function prepareSimpleCanvas()
 	pickLarge.addEventListener("mousedown", function(e){
 		curSize = "large";
 	});
+	//undo and redo events
+	redoButton.addEventListener("mousedown", function(e){
+		redo();
+
+	});
+	undoButton.addEventListener("mousedown", function(){
+		undo();
+		console.log("undo");
+	});
 	// Add touch event listeners to canvas element
 	canvas_simple.addEventListener("touchstart", function(e)
 	{
+		var pos = getMousePos(canvasDiv,e);
 		// Mouse down location
-		var mouseX = (e.changedTouches ? e.changedTouches[0].pageX : e.pageX) - this.offsetLeft,
-			mouseY = (e.changedTouches ? e.changedTouches[0].pageY : e.pageY) - this.offsetTop;
+		var mouseX = (e.changedTouches ? e.changedTouches[0].pageX : pos.x) - this.offsetLeft,
+			mouseY = (e.changedTouches ? e.changedTouches[0].pageY : pos.y) - this.offsetTop;
 
 		paint_simple = true;
 		addClickSimple(mouseX, mouseY, false);
 		redrawSimple();
 	}, false);
 	canvas_simple.addEventListener("touchmove", function(e){
-
-		var mouseX = (e.changedTouches ? e.changedTouches[0].pageX : e.pageX) - this.offsetLeft,
-			mouseY = (e.changedTouches ? e.changedTouches[0].pageY : e.pageY) - this.offsetTop;
+		var pos = getMousePos(canvasDiv,e);
+		var mouseX = (e.changedTouches ? e.changedTouches[0].pageX : pos.x) - this.offsetLeft,
+			mouseY = (e.changedTouches ? e.changedTouches[0].pageY : pos.y) - this.offsetTop;
 
 		if(paint_simple){
 			addClickSimple(mouseX, mouseY, true);
@@ -130,6 +191,68 @@ function prepareSimpleCanvas()
 	}, false);
 }
 
+
+
+    function saveImage() {
+		//save the canvas image to undo array
+          var imgSrc = canvas_simple.toDataURL("image/png");
+          savedImages.push(imgSrc);
+          //undoButton.enable();
+    }
+    function undo() {
+		console.log('Undo CANVAS button clicked!');
+		undoLog=1;
+		redoLog=0;
+          //save the current canvas in redo array
+          this.removeStrokes();
+          redrawSimple();
+
+
+    }
+    function redo() {
+		console.log('Redo CANVAS button clicked!');
+		redoLog=1;
+		undoLog=0;
+          //save the current canvas in undo array
+          this.surrateStroke();
+          //redraw the canvas
+
+		  redrawSimple();
+
+    }
+    function removeImage() {
+		//save the canvas image to redo array
+
+          var imgSrc = canvas_simple.toDataURL("image/png");
+          removedImages.push(imgSrc);
+          //redoButton.enable();
+    }
+	function removeStrokes() {
+		//save the canvas image to redo array
+		removeX=[];
+		removeY=[];
+		removeX=strokex;
+		removeY=strokey;
+
+
+          var imgSrc = canvas_simple.toDataURL("image/png");
+          removedImages.push(imgSrc);
+          //redoButton.enable();
+    }
+	function surrateStroke(){
+		for (var i=0; i<removeX.length;i++){
+			addClickSimple(removeX[i],removeY[i],true)
+		}
+		strokex.push(removeX);
+		strokey.push(removeY);
+	}
+
+
+function saveStroke(x,y){
+	strokex.push(x);
+	strokey.push(y);
+
+}
 function addClickSimple(x, y, dragging)
 {
 	clickX_simple.push(x);
@@ -147,7 +270,19 @@ function clearCanvas_simple()
 function redrawSimple()
 {
 	clearCanvas_simple();
-
+	if(undoLog == 1){
+		for(var i=0; i < clickX_simple.length; i++){
+			//if(clickDrag_simple[i] && i){
+				for(var k=0; k < strokex.length; k++){
+					if(clickX_simple[i] == strokex[k] && clickY_simple[i] == strokey[k] ){
+						delete clickX_simple[i];
+						delete clickY_simple[i];
+					}
+				}
+			//}
+		}
+		undoLog = 0;
+	}
 	var radius;
 	//context_simple.strokeStyle = "#df4b26";
 	context_simple.lineJoin = "round";

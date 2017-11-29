@@ -1,31 +1,56 @@
 <!DOCTYPE html>
 <head>
+<!-- YOU PUT EXTRA FILES IN THE HEADER -->
 	<title> Prototype canvas </title>
-
+	<!-- This file is a javascript lib -->
+	<script type="text/javascript" src="jquery-3.2.1.min.js"></script>
+	<link rel="stylesheet" href="style.css">
 </head>
 <body>
 	<!--<canvas id="canvasInAPerfectWorld" width="490" height="220"></canvas>-->
 
+	<!-- create drawing canvas -->
 	<div id="canvasSimpleDiv"></div>
+	<!-- add javascript file -->
+	<!-- src is the path from THIS FILE (HTML). relating to this file where is the src file -->
 	<script type="text/javascript" src="javascrip.js"></script>
-	<ul>
-		<li><button id="clear_canvas_simple" type="Button">Clear!</button></li>
-		<li>
-			<button id="grabPurple" type="Button">purple</button>
-			<button id="grabGreen" type="Button">green</button>
-			<button id="grabYellow" type="Button">yellow</button>
-			<button id="grabBrown" type="Button">brown</button>
-		</li>
-		<li>
+		<!-- This is the erase Button
+	 		id = "name" === #name
+			id's are used to link certain functionalities that the id spans to
+			class is the same-->
+		<div id="clear_canvas_simple" type="Button"></div>
+		<!-- this is the paint button -->
+		<div class="preview" ></div>
+		<!-- this is the pop up window, once clicked from preview
+	 		THIS DIV ONLY WORKS WITH jquery-->
+		<div class="colorWheel" style="display:none">
+			<div class="pickColor">
+				<!-- different colors have different event handelers -->
+				<button id="grabPurple" type="Button"></button>
+				<button id="grabGreen" type="Button"></button>
+				<button id="grabYellow" type="Button"></button>
+				<button id="grabBrown" type="Button"></button>
+				<button id="grabBlue" type="Button"></button>
+				<button id="grabRed" type="Button"></button>
+				<button id="grabBlack" type="Button"></button>
+			</div>
+		</div>
+
+
+		<div class="pickSize">
 			<button id="pickSmall" type="Button">small</button>
 			<button id="pickMedium" type="Button">medium</button>
 			<button id="pickLarge" type="Button">large</button>
-		</li>
-		<li><button id="clickEraser" type="Button">Eraser</button></li>
-	</ul>
+		</div>
+
+		<div id="clickEraser" type="Button"></div>
+		<div id="redoButton" type="Button"></div>
+		<div id="undoButton" type="Button"></div>
+
 
 
 	<script type="text/javascript">
+    // prepare canvas
     	prepareSimpleCanvas();
 	</script>
 </body>
