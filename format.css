@@ -1,0 +1,175 @@
+.colorbtn {
+    background-image: url("imgs/pencil.png");
+    padding: 23px 23px;
+    background-size: 100%;background-size: 80%;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+}
+
+.colorbtn:hover, .sizebtn:focus {
+    background-color: #3e8e41;
+    -webkit-transition-duration: 0.4s; 
+    transition-duration: 0.4s;
+}
+
+.colordown {
+    position: relative;
+    display: inline-block;
+}
+
+.color-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 30px;
+    overflow: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}   
+
+.color-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.colordown a:hover {background-color: #78cadf}
+
+.showcolor {display:block;}
+
+#grabBlack{
+    cursor: pointer;
+}
+#grabRed{
+    cursor: pointer;
+}
+#grabGreen{
+    cursor: pointer;
+}
+#grabYellow{
+    cursor: pointer;
+}
+#grabPurple{
+    cursor: pointer;
+}
+#grabBrown{
+    cursor: pointer;
+}
+#grabOrange{
+    cursor: pointer;
+}
+
+.sizebtn{
+    background-image: url("imgs/toggle.png");
+    padding: 23px 23px;
+    background-size: 80%;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+}
+
+.sizebtn:hover, .sizebtn:focus {
+    background-color: #3e8e41;
+    -webkit-transition-duration: 0.4s; 
+    transition-duration: 0.4s;
+}
+
+.sizedown {
+    position: relative;
+    display: inline-block;
+}
+
+.size-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 30px;
+    overflow: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}   
+
+.size-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.sizedown a:hover {background-color: #78cadf}
+
+.showsize {display:block;}
+
+#pickSmall{
+    cursor: pointer;
+}
+
+#pickMedium{
+    cursor: pointer;
+}
+
+#pickLarge{
+    cursor: pointer;
+}
+
+#undoButton{
+    background-image: url("imgs/undo.png");
+    padding: 23px 23px;
+    background-size: 80%;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+}
+
+#undoButton:hover {
+    background-color: #3e8e41;
+    -webkit-transition-duration: 0.4s; 
+    transition-duration: 0.4s;
+}
+
+#redoButton{
+    background-image: url("imgs/redo.png");
+    padding: 23px 23px;
+    background-size: 80%;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+}
+
+#redoButton:hover {
+    background-color: #3e8e41;
+    -webkit-transition-duration: 0.4s; 
+    transition-duration: 0.4s;
+}
+
+#clickEraser{
+    background-image: url("imgs/eraser.png");
+    padding: 23px 23px;
+    background-size: 80%;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+}
+
+#clickEraser:hover {
+    background-color: #3e8e41;
+    -webkit-transition-duration: 0.4s; 
+    transition-duration: 0.4s;
+}
+
+#clear_canvas_simple{
+    background-image: url("imgs/trash.png");
+    padding: 23px 23px;
+    background-size: 80%;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+}
+
+#clear_canvas_simple:hover{
+    background-color: #3e8e41;
+    -webkit-transition-duration: 0.4s; 
+    transition-duration: 0.4s;
+}

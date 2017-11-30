@@ -8,27 +8,12 @@
 	</style>
 
 	<script type="text/javascript" src="jquery-3.2.1.min.js"></script>
-	<link rel="stylesheet" href="format.css">
+	<link rel="stylesheet" href="format01.css">
 	<script type = "text/javascript" src = "proto.js"></script>
 	<script src="https://use.fontawesome.com/3c2695bd6a.js"></script>
-	<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
 </head>
-
 <body>
-
-	<div class="colordown">
-		<button onclick="colorFunction()" class="colorbtn"></button>
-	  	<div id="color" class="color-content">
-	  		<a id = "grabBlack">Black</a>
-	  		<a id = "grabRed">Red</a>
-			<a id = "grabGreen">Green</a>
-			<a id = "grabYellow">Yellow</a>
-			<a id = "grabPurple">Purple</a>
-			<a id = "grabBrown">Brown</a>
-			<a id = "grabOrange">Orange</a>  
-	  	</div>
-	</div>
-
+	
 	<script>
 	function colorFunction() {
     	document.getElementById("color").classList.toggle("showcolor");
@@ -46,15 +31,6 @@
   		}
 	}
 	</script> 
-
-	<div class="sizedown">
-		<button onclick="sizeFunction()" class="sizebtn"></button>
-		<div id="size" class="size-content">
-			<a id = "pickSmall">Small</a>
-			<a id = "pickMedium">Medium</a>
-			<a id = "pickLarge">Large</a> 
-		</div>
-	</div>
 	
 	<script>
 	function sizeFunction() {
@@ -72,13 +48,38 @@
 			}
 		}
 	}
-	</script> 	
-	<button id="undoButton" type="Button"></button>
-	<button id="redoButton" type="Button"></button>
-	<button id="clickEraser" type="Button"></button>
-	<button id="clear_canvas_simple" type="Button"></button>
+	</script> 
+	
+	<div id = "protoCanvas">
+		<div class="btn-group">
+			<div class="colordown">
+				<button onclick="colorFunction()" class="colorbtn"></button>
+					<div id="color" class="color-content">
+						<a id = "grabBlack">Black</a>
+						<a id = "grabRed">Red</a>
+						<a id = "grabGreen">Green</a>
+						<a id = "grabYellow">Yellow</a>
+						<a id = "grabPurple">Purple</a>
+						<a id = "grabBrown">Brown</a>
+						<a id = "grabOrange">Orange</a>  
+					</div>
+			</div>
+			<br>
+			<div class="sizedown">
+				<button onclick="sizeFunction()" class="sizebtn"></button>
+					<div id="size" class="size-content">
+						<a id = "pickSmall">Small</a>
+						<a id = "pickMedium">Medium</a>
+						<a id = "pickLarge">Large</a> 
+					</div>
+			</div>
+			<button id="undoButton" type="Button"></button>
+			<button id="redoButton" type="Button"></button>
+			<button id="clickEraser" type="Button"></button>
+			<button id="clear_canvas_simple" type="Button"></button>
+		</div>	
+	</div>
 
-	<div id = "protoCanvas"></div>	
 	<script type="text/javascript">
     	prepareSimpleCanvas();
 	</script>
