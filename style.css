@@ -15,6 +15,9 @@
 }*/
 /*.button:hover {background-color: #3e8e41;
 				box-shadow: 0 9px #999;}*/
+
+
+
 #grabPurple{
     background-color: #cb3594;
     border:1px solid #cb4594;
@@ -29,7 +32,7 @@
     border:1px solid #659b41;
     border-radius: 50%;
     cursor: pointer;
-    position: absolute; left: 15%; top: 10%;
+    position: absolute; left: 15%; top: 60%;
     width: 40px;
     height: 40px;
 }
@@ -38,7 +41,7 @@
     border:1px solid #ffcf33;
     border-radius: 50%;
     cursor: pointer;
-    position: absolute; left: 5%; top: 15%;
+    position: absolute; left: 5%; top: 45%;
     width: 40px;
     height: 40px;
 }
@@ -56,7 +59,7 @@
     border:1px solid #FF0000;
     border-radius: 50%;
     cursor: pointer;
-    position: absolute; left: 25%; top: 15%;
+    position: absolute; left: 25%; top: 45%;
     width: 40px;
     height: 40px;
 }
@@ -65,7 +68,7 @@
     border:1px solid #986928;
     border-radius: 50%;
     cursor: pointer;
-    position: absolute; left: 15%; top: 20%;
+    position: absolute; left: 15%; top: 25%;
     width: 40px;
     height: 40px;
 }
@@ -74,7 +77,7 @@
     border:1px solid #ffffff;
     border-radius: 50%;
     cursor: pointer;
-    position: absolute; left: 35%; top: 5%;
+    position: absolute; left: 35%; top: 25%;
     width: 40px;
     height: 40px;
 }
@@ -104,6 +107,14 @@
 /*Here name:hover means "when mouse hover over button/spanning area"*/
 #clickEraser:hover{
     box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+.disabledbutton {
+    pointer-events: none;
+    opacity: 0.4;
+}
+.enableButton {
+    pointer-events: all;
+    opacity: 1;
 }
 #undoButton{
     background: url("images/undo.png") repeat scroll center center transparent;
@@ -155,8 +166,8 @@ html, body {
     font-size: 12px;
     position: absolute;
     left:20%; top: 15%;
-    width: 460px;
-    height: 460px;
+    width: 400px;
+    height: 200px;
 }
 .preview {
     background: url("images/paint2.png") repeat scroll center center transparent;
@@ -168,6 +179,34 @@ html, body {
     width: 100px;
     position: absolute;
     left: 20%; top: 5%;
+}
+.pickSize{
+    background-image: url("images/icons8-line-width-101.png");
+    cursor: pointer;
+    height: 100px;
+    width: 100px;
+    position: absolute;
+    left: 60%; top: 5%;
+}
+.sizes{
+    display: none;
+    background-color: #222222;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 2px 2px 2px #444444;
+    color: #FFFFFF;
+    font-size: 12px;
+    position: absolute;
+    left:60%; top: 15%;
+    width: 200px;
+    height: 50px;
+}
+#save{
+    background-image: url("images/save.png");
+    cursor: pointer;
+    height: 100px;
+    width: 100px;
+    position: absolute;
+    left: 70%; top: 5%;
 }
 .preview:hover {
      box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
