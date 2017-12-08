@@ -2,6 +2,8 @@ var clickX_simple = new Array();
 var clickY_simple = new Array();
 var strokex = new Array();
 var strokey = new Array();
+var col = new Array();
+var siz =new Array();
 var removeX = new Array();
 var removeY = new Array();
 var clickDrag_simple = new Array();
@@ -23,7 +25,7 @@ var restore = [];
 
 var undoLog = 0;
 var redoLog = 0;
-var replaceStroke =0;
+var newPath =0;
 var curColor_simpleColors = colorPurple;
 var clickColor = new Array();
 
@@ -70,6 +72,7 @@ function prepareSimpleCanvas()
 
 	var recMouseDown = false;
 	var recMouseLeave = false;
+	//var newPath = 0;
 	canvas_simple.addEventListener("mousedown", function(e)
 	{
 		var pos = getMousePos(canvasDiv,e)
@@ -80,11 +83,29 @@ function prepareSimpleCanvas()
 		var mouseY = pos.y - this.offsetTop;
 		strokex = [];
 		strokey = [];
+		col = [];
+		siz = [];
+
+		if(newPath == 1){
+			canvasSketches.list = [];
+			canvasSketches.colorList = [];
+			canvasSketches.sizeList = [];
+
+			rCanvasSketches.list = [];
+			rCanvasSketches.colorList = [];
+			rCanvasSketches.sizeList = [];
+
+			canvasSketches.Top = 0;
+			rCanvasSketches.Top = 0;
+
+			newPath = 0;
+		}
 
 		paint_simple = true;
 		var startSketch = [];
 		addClickSimple(mouseX, mouseY, false);
 		saveStroke(mouseX,mouseY);
+		refresh();
 		redrawSimple();
 	});
 
@@ -100,6 +121,8 @@ function prepareSimpleCanvas()
 	canvas_simple.addEventListener("mouseup", function(){
 		paint_simple = false;
 		recMouseDown = false;
+		// canvasSketches.sizeList.push(curSize);
+		// canvasSketches.colorList.push(curColor_simpleColors);
 	  	redrawSimple();
 		if(recMouseLeave){
 
@@ -122,6 +145,7 @@ function prepareSimpleCanvas()
 		clickY_simple = new Array();
 		clickDrag_simple = new Array();
 		clickColor = new Array();
+		newPath = 1;
 		clearCanvas_simple();
 	});
     // this is an example of jquery
@@ -131,20 +155,32 @@ function prepareSimpleCanvas()
         //bCanPreview = true;
     });
 
-	function downloadCanvas(link, canvasId, filename) {
-    	var can = document.getElementById(canvasId)
-		link.href= can.toDataURL("image/png");
-    	link.download = filename;
+	function downloadCanvas(link, e, filename) {
+    	var img =  	document.createElement("img");
+		var image;
+		var download = document.getElementById("download");
+		img.onload = function(){
+    		var canvas = document.getElementById("canvasSimpleDiv");
+			image = canvas[0].toDataURL("images/png").replace("image/png", "image/octet-stream");
+		};
+
+		//img.src = e.target.result;
+		//link.download = filename;
+		download.setAttribute("href", image);
 	}
-	$('.pickSize').click(function(e) { // preview click
+	// document.getElementById('save').addEventListener('click', function () {
+	// 	this.href = document.getElementById('sketch').toDataURL('image/png');
+	// });
+	pickSize.addEventListener("mousedown",function(e) { // preview click
         // fade to toggle just slowly open or close the extra pop up screen
         $('.sizes').fadeToggle("slow", "linear");
         //bCanPreview = true;
     });
 	//save Button
-	save.addEventListener('click', function() {
-    	downloadCanvas(this, 'canvasSimpleDiv', 'test.png');
-	}, false);
+	// save.addEventListener('click', function() {
+    // 	// downloadCanvas(this, e, 'test.png');
+	// 	this.href = document.getElementById('sketch').toDataURL('image/png');
+	// });
 
 	//choose colors
 	grabPurple.addEventListener("mousedown", function(e){
@@ -199,7 +235,7 @@ function prepareSimpleCanvas()
 	});
 	undoButton.addEventListener("mousedown", function(){
 		undo();
-		console.log("undo");
+		//console.log("undo");
 	});
 	// Add touch event listeners to canvas element
 	canvas_simple.addEventListener("touchstart", function(e){
@@ -235,6 +271,8 @@ function prepareSimpleCanvas()
 
 function node(){
 	this.list = [];
+	this.colorList = [];
+	this.sizeList = [];
 	this.Top = 0;
 }
 function sNode(){
@@ -249,12 +287,16 @@ function saveImage() {
 }
 var redoRenew;
 var undoRenew;
+function refresh(){
+		$("#undoButton").removeClass("disabledbutton");
+		$("#redoButton").removeClass("disabledbutton");
+}
 function undo() {
 	console.log('Undo CANVAS button clicked!');
 	undoLog=1;
 	redoLog=0;
 	redoRenew =1;
-	replaceStroke =1;
+	newPath =1;
 
 	if(undoRenew == 1){
 		canvasSketches.Top = canvasSketches.list.length;
@@ -262,12 +304,11 @@ function undo() {
 	}
 
 	//gray out undo button unreachable
-	// if(canvasSketches.Top <0){
-	// 	$("#undoButton").addClass("disabledbutton");
-	// }
+
 	//push the Latest sketch List to another object
 	rCanvasSketches.list.push(canvasSketches.list[canvasSketches.Top-1]);
-
+	rCanvasSketches.colorList.push(canvasSketches.colorList[canvasSketches.Top-1]);
+	rCanvasSketches.sizeList.push(canvasSketches.sizeList[canvasSketches.Top-1]);
 
 	//make redo button avaliable
 
@@ -281,9 +322,18 @@ function undo() {
 
 	//pop then delete the latest sketch list --top
   	delete canvasSketches.list[canvasSketches.Top -1];
+	delete canvasSketches.colorList[rCanvasSketches.Top -1];
+	delete canvasSketches.sizeList[rCanvasSketches.Top -1];
 	//renew top
   	canvasSketches.Top = canvasSketches.list.length-1;
   	canvasSketches.list = clean(canvasSketches);
+	canvasSketches.colorList = cleanColor(canvasSketches);
+	canvasSketches.sizeList = cleanSize(canvasSketches);
+
+	if(canvasSketches.Top <= 0){
+	 	$("#undoButton").addClass("disabledbutton");
+		$("#redoButton").removeClass("disabledbutton");
+	}
 
 }
 function redo() {
@@ -291,7 +341,10 @@ function redo() {
 	redoLog=1;
 	undoLog=0;
 	undoRenew = 1;
-	replaceStroke = 1;
+	newPath = 1;
+
+
+
 
 	//one time renewal of Top
 	if(redoRenew == 1){
@@ -300,10 +353,14 @@ function redo() {
 	}
 	//delete last element in list[top].x
 	butterFilt = rCanvasSketches.list[rCanvasSketches.Top-1];
+
 	delete butterFilt.x[butterFilt.x.length-1];
 	delete butterFilt.x[butterFilt.x.length-1];
+
 	//push the earliest sketch list
 	canvasSketches.list.push(rCanvasSketches.list[rCanvasSketches.Top-1]);
+	canvasSketches.colorList.push(rCanvasSketches.colorList[rCanvasSketches.Top-1]);
+	canvasSketches.sizeList.push(rCanvasSketches.sizeList[rCanvasSketches.Top-1]);
     //save the current canvas in undo array
     surrateStroke(rCanvasSketches.list[rCanvasSketches.Top-1]);
     //redraw the canvas
@@ -311,11 +368,19 @@ function redo() {
 
 	//pop then delete the latest sketch list --top
    	delete rCanvasSketches.list[rCanvasSketches.Top -1];
+	delete rCanvasSketches.colorList[rCanvasSketches.Top -1];
+	delete rCanvasSketches.sizeList[rCanvasSketches.Top -1];
+
 	//renew top
   	rCanvasSketches.Top = rCanvasSketches.list.length-1;
   	rCanvasSketches.list = clean(rCanvasSketches);
+	rCanvasSketches.colorList = cleanColor(canvasSketches);
+	rCanvasSketches.sizeList = cleanSize(canvasSketches);
 
-
+	if(rCanvasSketches.Top <= 0){
+			$("#redoButton").addClass("disabledbutton");
+			$("#undoButton").removeClass("disabledbutton");
+	}
 }
 function clean(list){
 	newList = [];
@@ -325,6 +390,30 @@ function clean(list){
 		}
 		else{
 			newList.push(list.list[k]);
+		}
+	}
+	return newList;
+}
+function cleanColor(list){
+	newList = [];
+	for(k = 0; k<list.Top;k++){
+		if(list.colorList[k] == null){
+
+		}
+		else{
+			newList.push(list.colorList[k]);
+		}
+	}
+	return newList;
+}
+function cleanSize(list){
+	newList = [];
+	for(k = 0; k<list.Top;k++){
+		if(list.sizeList[k] == null){
+
+		}
+		else{
+			newList.push(list.sizeList[k]);
 		}
 	}
 	return newList;
@@ -361,13 +450,16 @@ function surrateStroke(list){
 function saveStroke(x,y){
 	strokex.push(x);
 	strokey.push(y);
-
+	col.push(curColor_simpleColors);
+	siz.push(curSize);
+	// canvasSketches.colorList.push(curColor_simpleColors);
+	// canvasSketches.sizeList.push(curSize);
 }
 function saveWholeStroke(){
-	if(replaceStroke == 1){
-		canvasSketches.list = [];
-		rCanvasSketches.list = [];
-	}
+	// if(replaceStroke == 1){
+	// 	canvasSketches.list = [];
+	// 	rCanvasSketches.list = [];
+	// }
 	var strokes = new sNode();
 	var x = [];
 	var y = [];
@@ -376,9 +468,13 @@ function saveWholeStroke(){
 	for(k=0;k<strokex.length;k++){
 		strokes.x.push(strokex[k]);
 		strokes.y.push(strokey[k]);
+		canvasSketches.colorList.push(col[k]);
+		canvasSketches.sizeList.push(siz[k]);
 	}
 
 	canvasSketches.list.push(strokes);
+	// canvasSketches.colorList.push(col);
+	// canvasSketches.sizeList.push(siz);
 	canvasSketches.Top = canvasSketches.list.length;
 }
 function addClickSimple(x, y, dragging)
@@ -414,6 +510,20 @@ function redrawSimple()
 			}
 		}
 		undoLog = 0;
+	}
+	if(redoLog >=1){
+		for(var i=0; i < clickX_simple.length; i++){
+			if(rCanvasSketches.Top-1 >= 0){
+				sampled = rCanvasSketches.list[rCanvasSketches.Top-1];
+				for(var inc =0; inc < sampled.x.length; inc++){
+					if(clickX_simple[i] == sampled.x[inc] && clickY_simple[i] == sampled.y[inc] ){
+						clickSize[i] = rCanvasSketches.sizeList[inc];
+						clickColor[i] = rCanvasSketches.colorList[inc];
+					}
+				}
+			}
+		}
+		redoLog = 0;
 	}
 	var radius;
 	//context_simple.strokeStyle = "#df4b26";
